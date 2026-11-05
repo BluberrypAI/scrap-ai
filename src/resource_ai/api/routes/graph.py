@@ -1,3 +1,4 @@
+import os
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,14 +11,27 @@ from resource_ai.api.schemas.facility_assessment import (
 )
 from resource_ai.api.schemas.facility_search import FacilitySearchRequest, FacilitySearchResponse
 from resource_ai.api.schemas.graph import CandidateRequest, CandidateResponse
+from resource_ai.api.schemas.kg_next_step import NextStepRequest, NextStepResponse
 from resource_ai.api.schemas.kg_planning import PathPlanningRequest, PathPlanningResponse
 from resource_ai.api.schemas.kg_pool import CandidatePoolRequest, CandidatePoolResponse
 from resource_ai.core.dependencies import get_graph_query
 from resource_ai.knowledge_graph.graph_store import GraphStoreError
+from resource_ai.knowledge_graph.next_step import next_step
 from resource_ai.knowledge_graph.ontology import ontology
 from resource_ai.knowledge_graph.query import GraphQuery
 
 router = APIRouter(prefix="/kg", tags=["knowledge-graph"])
+
+
+@router.post("/next-step", response_model=NextStepResponse)
+def next_process_step(request: NextStepRequest):
+    try:
+        return next_step(request, demo=os.getenv("SCRAP_KG_REFERENCE_DEMO") == "1")
+    except GraphStoreError as error:
+        raise HTTPException(
+            status_code=409 if error.code == "invalid-progress" else 503,
+            detail={"code": error.code, "message": str(error)},
+        ) from None
 
 
 @router.get("/planning-coverage")

@@ -5,6 +5,8 @@
 
 - 전체 실행 흐름: [docs/pipeline-baseline.md](docs/pipeline-baseline.md)
 - 코드와 데이터 구조: [docs/architecture.md](docs/architecture.md)
+- SCRAP 처리경로 API: [docs/scrap-next-step.md](docs/scrap-next-step.md)
+- 의사결정 연구 검토: [docs/scrap-decision-research.md](docs/scrap-decision-research.md)
 - 팀 공통 규칙: [resource-ai-team/.github CONTRIBUTING](https://github.com/resource-ai-team/.github/blob/main/CONTRIBUTING.md)
 
 ## 조직 레포 구성
