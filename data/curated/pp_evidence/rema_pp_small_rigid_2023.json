@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "record_id": "REMA_PP_SMALL_RIGID_2023",
+  "name": "PP Small Rigid Plastic",
+  "publisher": "ReMA (formerly ISRI)",
+  "source_url": "https://www.isrispecs.org/orpheus_resource/pp-small-rigid-plastic/",
+  "effective_date": "2023-10-18",
+  "checked_on": "2026-10-29",
+  "applicability": "post-consumer PP small rigid products/packaging from positive sort; buyer-specific confirmation required; not Korean statutory permit or facility intake criterion",
+  "license_note": "Original website may be copyrighted. This file contains only independently structured factual thresholds, not reproduced narrative text; retain attribution and consult original.",
+  "rules": [
+    {
+      "id": "pp_total_contamination",
+      "kind": "maximum",
+      "material": "all_non_target_contaminants",
+      "threshold": 15,
+      "unit": "wt%",
+      "basis": "mass fraction of bale",
+      "qualifier": "total contaminants; do not substitute for moisture or individual contaminant test"
+    },
+    {
+      "id": "hdpe_or_ldpe_rigid",
+      "kind": "maximum",
+      "material": "HDPE or LDPE rigid plastic",
+      "threshold": 10,
+      "unit": "wt%",
+      "basis": "bale mass",
+      "qualifier": "source gives exception 10%; grouping/individual interpretation needs buyer verification"
+    },
+    {
+      "id": "pet_and_ps_rigid_combined",
+      "kind": "maximum",
+      "material": "PET and PS rigid plastic combined",
+      "threshold": 3,
+      "unit": "wt%",
+      "basis": "bale mass",
+      "qualifier": "source says 3% maximum combined"
+    },
+    {
+      "id": "other_non_pp_rigid",
+      "kind": "maximum",
+      "material": "other non-PP rigid plastic (including #7 / PLA / PHA)",
+      "threshold": 1,
+      "unit": "wt%",
+      "basis": "bale mass",
+      "qualifier": "under source category interpretation"
+    },
+    {
+      "id": "pvc",
+      "kind": "potential_rejection",
+      "material": "PVC #3",
+      "threshold": null,
+      "unit": null,
+      "basis": "visual/test confirmed",
+      "qualifier": "ReMA says item is not allowed and its presence MAY result in shipment rejection; buyer-specific acceptance review required, not an unconditional legal prohibition."
+    },
+    {
+      "id": "plastic_bags_film",
+      "kind": "potential_rejection",
+      "material": "plastic bags or film",
+      "threshold": null,
+      "unit": null,
+      "basis": "visual/test confirmed",
+      "qualifier": "ReMA says item is not allowed and its presence MAY result in shipment rejection; buyer-specific acceptance review required, not an unconditional legal prohibition."
+    },
+    {
+      "id": "other_listed_individual_contaminants",
+      "kind": "maximum",
+      "material": "liquid/residues, loose paper/cardboard, aluminum cans and other low-level specified contaminants",
+      "threshold": 2,
+      "unit": "wt%",
+      "basis": "bale mass, each individually",
+      "qualifier": "Check full ReMA source and buyer agreement for precise definitions and exemptions."
+    }
+  ],
+  "constraints": {
+    "can_determine_final_acceptance": false,
+    "require_lot_measurement": true,
+    "not_equivalent_to_domestic_pp_spec": true,
+    "do_not_treat_ocr_text_as_verified_measurement": true
+  },
+  "country_of_origin": "United States",
+  "application_region": "foreign_trade_reference_only",
+  "source_stream": "predominantly_post_consumer_rigid_PP_packaging",
+  "use_for_domestic_regulatory_compliance": false,
+  "use_as_default_industrial_pp_plant_intake_spec": false,
+  "requires_explicit_selection_of_foreign_trade_guideline": true
+}
