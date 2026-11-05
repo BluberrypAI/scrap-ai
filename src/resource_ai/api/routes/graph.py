@@ -23,7 +23,7 @@ from resource_ai.knowledge_graph.query import GraphQuery
 router = APIRouter(prefix="/kg", tags=["knowledge-graph"])
 
 
-@router.post("/next-step", response_model=NextStepResponse)
+@router.post("/next-step", response_model=NextStepResponse, deprecated=True)
 def next_process_step(request: NextStepRequest):
     try:
         return next_step(request, demo=os.getenv("SCRAP_KG_REFERENCE_DEMO") == "1")

@@ -206,3 +206,7 @@ resource-rag evaluate --cases data/config/retrieval_eval.json
 5. PR이 병합되면 Jira 티켓을 `Done`으로 변경합니다.
 
 `develop → main` 배포 PR은 인프라 담당자만 병합합니다.
+
+## SCRAP 반입 근거 검토
+
+`POST /treatment/intake-review`는 서버가 후보와 출처를 검증해 보낸 공개 요약을 검토합니다. 두 서비스에 같은 `SCRAP_INTAKE_SERVICE_TOKEN`을 설정하고 AI 서비스에 Azure Responses 배포를 설정합니다. SCRAP의 단계별 공정과 전국 명부는 scrap-server의 PostgreSQL에서 조회합니다.
