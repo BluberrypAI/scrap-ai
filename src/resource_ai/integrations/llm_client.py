@@ -10,7 +10,7 @@ class ReviewModelUnavailable(RuntimeError):
     pass
 
 
-def review_with_azure(settings, *, instructions, evidence):
+def azure_response(settings, body, *, timeout):
     try:
         endpoint = urlsplit(settings.azure_openai_endpoint)
     except ValueError:
@@ -38,23 +38,42 @@ def review_with_azure(settings, *, instructions, evidence):
     ):
         raise ReviewModelUnavailable()
     prefix = project[1] if project else ""
-    body = {
-        "model": settings.azure_openai_deployment,
-        "store": False,
-        "reasoning": {"effort": "high"},
-        "max_output_tokens": 2400,
-        "instructions": instructions,
-        "input": evidence,
-    }
     try:
-        with httpx.Client(timeout=35, follow_redirects=False, trust_env=False) as client:
+        with httpx.Client(timeout=timeout, follow_redirects=False, trust_env=False) as client:
             response = client.post(
-                f"https://{host}{prefix}/openai/v1/responses", headers={"api-key": key}, json=body
+                f"https://{host}{prefix}/openai/v1/responses",
+                headers={"api-key": key},
+                json={**body, "model": settings.azure_openai_deployment, "store": False},
             )
             response.raise_for_status()
             payload = response.json()
         if payload.get("status") != "completed":
-            raise ReviewModelUnavailable()
+            details = payload.get("incomplete_details") or {}
+            reason = details.get("reason")
+            if reason in {"max_output_tokens", "content_filter"}:
+                raise ReviewModelUnavailable(f"incomplete: {reason}")
+            raise ReviewModelUnavailable("incomplete response")
+        return payload
+    except httpx.HTTPStatusError as error:
+        raise ReviewModelUnavailable(f"HTTP {error.response.status_code}") from None
+    except httpx.TimeoutException:
+        raise ReviewModelUnavailable("provider timeout") from None
+    except (httpx.HTTPError, ValueError, TypeError, KeyError, AttributeError):
+        raise ReviewModelUnavailable("provider response error") from None
+
+
+def review_with_azure(settings, *, instructions, evidence):
+    payload = azure_response(
+        settings,
+        {
+            "reasoning": {"effort": "high"},
+            "max_output_tokens": 2400,
+            "instructions": instructions,
+            "input": evidence,
+        },
+        timeout=35,
+    )
+    try:
         return "".join(
             part["text"]
             for item in payload.get("output", [])
@@ -62,5 +81,5 @@ def review_with_azure(settings, *, instructions, evidence):
             for part in item.get("content", [])
             if part.get("type") == "output_text"
         )
-    except (httpx.HTTPError, ValueError, TypeError, KeyError, AttributeError):
+    except (ValueError, TypeError, KeyError, AttributeError):
         raise ReviewModelUnavailable() from None

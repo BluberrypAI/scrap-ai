@@ -210,3 +210,5 @@ resource-rag evaluate --cases data/config/retrieval_eval.json
 ## SCRAP 반입 근거 검토
 
 `POST /treatment/intake-review`는 서버가 후보와 출처를 검증해 보낸 공개 요약을 검토합니다. 두 서비스에 같은 `SCRAP_INTAKE_SERVICE_TOKEN`을 설정하고 AI 서비스에 Azure Responses 배포를 설정합니다. SCRAP의 단계별 공정과 전국 명부는 scrap-server의 PostgreSQL에서 조회합니다.
+
+서버의 `POST /treatment/intake-reviews`는 단계별 업체 후보의 공개 근거를 모두 검토합니다. `POST /treatment/facility-web-search`는 PP 공정에 맞는 공개 조사 후보를 조회합니다. 두 API 모두 서비스 토큰을 검증하며 실제 인계 여부는 별도 확인으로 남깁니다.
