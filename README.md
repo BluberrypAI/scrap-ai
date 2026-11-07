@@ -206,3 +206,15 @@ resource-rag evaluate --cases data/config/retrieval_eval.json
 5. PR이 병합되면 Jira 티켓을 `Done`으로 변경합니다.
 
 `develop → main` 배포 PR은 인프라 담당자만 병합합니다.
+
+## SCRAP 반입 근거 검토
+
+SCRAP의 공정·업체 후보는 scrap-server의 PostgreSQL에서 조회합니다. AI 서비스는 서버가 보낸 후보별 공개 근거를 검토하고, 요청이 있을 때 PP 공정의 공개 웹 조사 단서를 반환합니다.
+
+| scrap-server API | scrap-ai 내부 API | 역할 |
+| --- | --- | --- |
+| `POST /api/treatment/intake-review` | `POST /treatment/intake-reviews` | 선택한 한 업체의 반입 근거 검토 |
+| `POST /api/treatment/intake-reviews` | `POST /treatment/intake-reviews` | 현재 단계의 모든 업체 후보 검토 |
+| `POST /api/treatment/facility-web-search` | `POST /treatment/facility-web-search` | PP 공정에 대한 추가 공개 웹 조사 |
+
+서버와 AI에 같은 `SCRAP_INTAKE_SERVICE_TOKEN`을 설정하고 AI에 Azure Responses 배포를 설정합니다. 검토 결과와 조사 단서는 후보 판단에 사용하며 실제 인계 확인은 서버에서 따로 진행합니다.
