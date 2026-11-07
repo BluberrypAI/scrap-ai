@@ -1,6 +1,7 @@
 """Review the public evidence for a treatment handoff."""
 
 import json
+import re
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -95,6 +96,35 @@ def apply_finding(finding, sources, next_check):
     )
 
 
+# Initial lots use fixed input labels. A real quote about a different form is
+# still insufficient. Later stages use their recorded output label.
+INITIAL_FORM_TERMS = {
+    ("pp", "scrap"): r"사출|제조\s*잔재|스크랩|scraps?|offcuts?|injection",
+    ("pp", "shredded"): r"파쇄품|파쇄물|분쇄품|분쇄물|플레이크|shred(?:ded|s)?|flakes?|regrind",
+    ("pe", "film"): r"필름|films?",
+    ("pet", "bottle"): r"페트병|병|bottles?",
+    ("aluminium", "can"): r"음료\s*캔|폐\s*캔|(?:beverage\s+)?cans?|UBC",
+}
+MATERIAL_TERMS = {
+    "pp": r"PP|polypropylene|폴리프로필렌",
+    "pe": r"PE|(?:LL|L|H)DPE|polyethylene|폴리에틸렌",
+    "pet": r"PET|페트|polyethylene terephthalate|폴리에틸렌\s*테레프탈레이트",
+    "aluminium": r"alumini?um|알루미늄",
+}
+
+
+def covers_initial_input(packet, finding):
+    terms = INITIAL_FORM_TERMS.get((packet.material.casefold(), packet.form.casefold()))
+    if not packet.waste_code or not terms or finding.kind == "insufficient":
+        return True
+    quote = finding.quote or ""
+    material = MATERIAL_TERMS[packet.material.casefold()]
+    return all(
+        re.search(rf"(?<![A-Za-z0-9])(?:{pattern})(?![A-Za-z0-9])", quote, re.IGNORECASE)
+        for pattern in (material, terms)
+    )
+
+
 def review_batch(request, model):
     packets = request.candidates
     results = {
@@ -124,6 +154,8 @@ def review_batch(request, model):
                 "회사 일반 설명이나 다른 후보의 근거를 끌어오지 마라. R코드는 검색 문맥이다. "
                 "분류번호가 null이면 현재 산출물 형태만 사용하고 분류번호를 추정하지 마라. "
                 "현재 허가, 용량, 실제 물량 인수 여부는 추정하지 마라. "
+                "최초 로트는 재질과 반입 형태가 함께 적힌 문장을 인용해라. "
+                "같은 소재라도 다른 형태를 다루는 문장은 반입 근거로 쓰지 마라. "
                 "quote는 해당 source_id의 summary 안에 연속해서 있는 문장을 그대로 써라. "
                 "자료가 없거나 부족하면 kind는 insufficient, source_id와 quote는 null이다."
             ),
@@ -150,6 +182,7 @@ def review_batch(request, model):
         sources = (
             {source.source_id: source for source in packet.sources}
             if packet.site_scope == "published_site_process"
+            and covers_initial_input(packet, findings[key])
             else {}
         )
         results[key] = apply_finding(findings[key], sources, packet.next_check)

@@ -115,3 +115,66 @@ def test_live_search_uses_current_form_and_retains_public_sources(monkeypatch):
         "leads": [lead],
         "dispatch_approved": False,
     }
+
+
+def test_scoped_evidence_needs_the_right_material_and_incoming_form():
+    from resource_ai.agents.intake_review import IntakeBatchRequest, review_batch
+
+    quotes = [
+        "This site accepts PP flakes for pellet production.",
+        "This site accepts PP pellets for compounding.",
+        "This site accepts PET flakes for pellet production.",
+        "This site accepts PE film for recycling.",
+        "이 공장은 사용 후 알루미늄 음료캔을 압축합니다.",
+    ]
+    candidates = [
+        ("correct-pp", "pp", "shredded", "51-03-01"),
+        ("wrong-form", "pp", "shredded", "51-03-01"),
+        ("wrong-material", "pp", "shredded", "51-03-01"),
+        ("correct-pe", "pe", "film", "51-03-07"),
+        ("correct-can", "aluminium", "can", "51-29-03"),
+    ]
+    packets = []
+    rows = []
+    for (key, material, form, code), quote in zip(candidates, quotes, strict=True):
+        packets.append(
+            {
+                "capability_key": key,
+                "site": "테스트 사업장",
+                "site_scope": "published_site_process",
+                "material": material,
+                "form": form,
+                "process": "재활용",
+                "waste_code": code,
+                "recycling_types": {},
+                "next_check": "반입 확인",
+                "sources": [
+                    {
+                        "source_id": key,
+                        "summary": quote,
+                        "publisher": "공장",
+                        "url": "https://example.org/plant",
+                        "locator": "반입 규격",
+                    }
+                ],
+            }
+        )
+        rows.append(
+            {
+                "capability_key": key,
+                "kind": "form_mentioned",
+                "source_id": key,
+                "quote": quote,
+            }
+        )
+    result = review_batch(
+        IntakeBatchRequest(candidates=packets), lambda **_: json.dumps(rows, ensure_ascii=False)
+    )
+    assert {key: item.status for key, item in result.results.items()} == {
+        "correct-pp": "reviewed",
+        "wrong-form": "needs_evidence",
+        "wrong-material": "needs_evidence",
+        "correct-pe": "reviewed",
+        "correct-can": "reviewed",
+    }
+    assert not any(item.dispatch_approved for item in result.results.values())
