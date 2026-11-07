@@ -1,6 +1,5 @@
 """Find source-backed public facility leads for one PP process."""
 
-import json
 import logging
 import re
 from typing import Literal
@@ -8,7 +7,11 @@ from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from resource_ai.integrations.llm_client import ReviewModelUnavailable, azure_response
+from resource_ai.integrations.llm_client import (
+    ReviewModelUnavailable,
+    azure_response,
+    parse_model_json,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -118,9 +121,7 @@ def extract(response):
         for note in part.get("annotations", [])
         if note.get("type") == "url_citation" and (key := source_key(note.get("url")))
     )
-    raw = "\n".join(part["text"] for part in content).strip()
-    raw = re.sub(r"^\x60{3}(?:json)?\s*|\s*\x60{3}$", "", raw).strip()
-    parsed = json.loads(raw)
+    parsed = parse_model_json("\n".join(part["text"] for part in content))
     if not isinstance(parsed, list):
         raise TypeError("검색 결과는 JSON 배열이어야 합니다.")
     leads = {}

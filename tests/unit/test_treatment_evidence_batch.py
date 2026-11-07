@@ -1,8 +1,10 @@
 import json
 
+import pytest
 from fastapi.testclient import TestClient
 
 from resource_ai.agents import facility_discovery
+from resource_ai.agents.intake_review import IntakeBatchRequest, review_batch
 from resource_ai.api.routes import intake
 from resource_ai.core.config import Settings
 from resource_ai.main import app
@@ -35,6 +37,7 @@ def test_batch_reviews_every_candidate_and_keeps_evidence_with_its_site(monkeypa
         packet,
         {**packet, "capability_key": "site-b", "site": "다른 사업장", "sources": []},
         {**packet, "capability_key": "site-c", "site": "결과가 누락된 사업장", "sources": []},
+        {**packet, "capability_key": "site-d", "site": "근거 부족인 사업장", "sources": []},
     ]
     answer = {
         "kind": "form_mentioned",
@@ -44,15 +47,17 @@ def test_batch_reviews_every_candidate_and_keeps_evidence_with_its_site(monkeypa
 
     def model(settings, *, instructions, evidence):
         sent = json.loads(evidence)
-        assert [item["capability_key"] for item in sent] == ["site-a", "site-b", "site-c"]
+        assert [item["capability_key"] for item in sent] == ["site-a", "site-b", "site-c", "site-d"]
         assert sent[0]["recycling_types"] == {"free": ["R-3-3", "R-10"]}
-        assert sent[1]["sources"] == sent[2]["sources"] == []
-        return json.dumps(
+        assert all(not row["sources"] for row in sent[1:])
+        payload = json.dumps(
             [
                 {**answer, "capability_key": "site-a"},
                 {**answer, "capability_key": "site-b"},
+                {"kind": "insufficient", "capability_key": "site-d"},
             ]
         )
+        return "[검토 결과]\n" + "```json\n" + payload + "\n```\n검토 완료"
 
     monkeypatch.setattr(intake, "review_with_azure", model)
     with TestClient(app) as client:
@@ -69,6 +74,8 @@ def test_batch_reviews_every_candidate_and_keeps_evidence_with_its_site(monkeypa
     assert results["site-a"]["source"]["url"] == "https://example.org/a"
     assert results["site-b"]["status"] == "needs_evidence"
     assert results["site-c"]["status"] == "model_unavailable"
+    assert results["site-d"]["status"] == "needs_evidence"
+    assert results["site-d"]["source"] is results["site-d"]["quote"] is None
     assert all(result["dispatch_approved"] is False for result in results.values())
 
 
@@ -95,7 +102,14 @@ def test_live_search_uses_current_form_and_retains_public_sources(monkeypatch):
                 },
                 {
                     "type": "message",
-                    "content": [{"type": "output_text", "text": json.dumps([lead])}],
+                    "content": [
+                        {
+                            "type": "output_text",
+                            "text": "공개 자료를 찾았습니다.\n"
+                            + json.dumps([lead, {**lead, "url": "https://example.org/unverified"}])
+                            + "\n출처를 확인해 주세요.",
+                        }
+                    ],
                 },
             ]
         }
@@ -117,29 +131,43 @@ def test_live_search_uses_current_form_and_retains_public_sources(monkeypatch):
     }
 
 
-def test_scoped_evidence_needs_the_right_material_and_incoming_form():
-    from resource_ai.agents.intake_review import IntakeBatchRequest, review_batch
-
-    quotes = [
-        "This site accepts PP flakes for pellet production.",
-        "This site accepts PP pellets for compounding.",
-        "This site accepts PET flakes for pellet production.",
-        "This site accepts PE film for recycling.",
-        "이 공장은 사용 후 알루미늄 음료캔을 압축합니다.",
-    ]
-    candidates = [
-        ("correct-pp", "pp", "shredded", "51-03-01"),
-        ("wrong-form", "pp", "shredded", "51-03-01"),
-        ("wrong-material", "pp", "shredded", "51-03-01"),
-        ("correct-pe", "pe", "film", "51-03-07"),
-        ("correct-can", "aluminium", "can", "51-29-03"),
-    ]
-    packets = []
-    rows = []
-    for (key, material, form, code), quote in zip(candidates, quotes, strict=True):
-        packets.append(
+@pytest.mark.parametrize(
+    ("material", "form", "code", "quote", "expected"),
+    [
+        ("pp", "shredded", "51-03-01", "This site accepts PP flakes.", "reviewed"),
+        ("pp", "shredded", "51-03-01", "This site accepts PP pellets.", "needs_evidence"),
+        ("pp", "shredded", "51-03-01", "This site accepts PET flakes.", "needs_evidence"),
+        ("pe", "film", "51-03-07", "This site accepts polyethylene film.", "reviewed"),
+        (
+            "pe",
+            "film",
+            "51-03-07",
+            "This site accepts polyethylene terephthalate film.",
+            "needs_evidence",
+        ),
+        (
+            "pe",
+            "film",
+            "51-03-07",
+            "폴리에틸렌 테레프탈레이트 필름을 반입합니다.",
+            "needs_evidence",
+        ),
+        (
+            "aluminium",
+            "can",
+            "51-29-03",
+            "이 공장은 사용 후 알루미늄 음료캔을 압축합니다.",
+            "reviewed",
+        ),
+    ],
+)
+def test_scoped_evidence_needs_the_right_material_and_incoming_form(
+    material, form, code, quote, expected
+):
+    request = IntakeBatchRequest(
+        candidates=[
             {
-                "capability_key": key,
+                "capability_key": "site",
                 "site": "테스트 사업장",
                 "site_scope": "published_site_process",
                 "material": material,
@@ -150,7 +178,7 @@ def test_scoped_evidence_needs_the_right_material_and_incoming_form():
                 "next_check": "반입 확인",
                 "sources": [
                     {
-                        "source_id": key,
+                        "source_id": "public",
                         "summary": quote,
                         "publisher": "공장",
                         "url": "https://example.org/plant",
@@ -158,23 +186,11 @@ def test_scoped_evidence_needs_the_right_material_and_incoming_form():
                     }
                 ],
             }
-        )
-        rows.append(
-            {
-                "capability_key": key,
-                "kind": "form_mentioned",
-                "source_id": key,
-                "quote": quote,
-            }
-        )
-    result = review_batch(
-        IntakeBatchRequest(candidates=packets), lambda **_: json.dumps(rows, ensure_ascii=False)
+        ]
     )
-    assert {key: item.status for key, item in result.results.items()} == {
-        "correct-pp": "reviewed",
-        "wrong-form": "needs_evidence",
-        "wrong-material": "needs_evidence",
-        "correct-pe": "reviewed",
-        "correct-can": "reviewed",
-    }
-    assert not any(item.dispatch_approved for item in result.results.values())
+    rows = [
+        {"capability_key": "site", "kind": "form_mentioned", "source_id": "public", "quote": quote}
+    ]
+    result = review_batch(request, lambda **_: json.dumps(rows, ensure_ascii=False)).results["site"]
+    assert result.status == expected
+    assert not result.dispatch_approved

@@ -1,5 +1,6 @@
 """Azure Responses adapter for an explicit, bounded evidence review."""
 
+import json
 import re
 from urllib.parse import urlsplit
 
@@ -8,6 +9,26 @@ import httpx
 
 class ReviewModelUnavailable(RuntimeError):
     pass
+
+
+JSON_CONTAINER_START = re.compile(
+    r'\{(?=\s*(?:"|\}))|\[(?=\s*(?:[\[{"\]]|-?\d|true\b|false\b|null\b))'
+)
+
+
+def parse_model_json(text: str):
+    """Read a single JSON payload, allowing a code fence or surrounding prose."""
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        start = JSON_CONTAINER_START.search(text)
+        if not start:
+            raise
+
+    value, end = json.JSONDecoder().raw_decode(text, start.start())
+    if JSON_CONTAINER_START.search(text, end):
+        raise ValueError("Multiple JSON payloads in model response")
+    return value
 
 
 def azure_response(settings, body, *, timeout):
