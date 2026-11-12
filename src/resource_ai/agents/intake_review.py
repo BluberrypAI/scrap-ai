@@ -6,6 +6,14 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from resource_ai.agents.lot_review import (
+    LOT_INSTRUCTIONS,
+    LotContext,
+    LotFinding,
+    LotReview,
+    apply_lot_finding,
+    observe_photos,
+)
 from resource_ai.integrations.llm_client import ReviewModelUnavailable, parse_model_json
 
 
@@ -41,6 +49,7 @@ CapabilityKey = Annotated[str, Field(pattern=r"^[a-z0-9][a-z0-9-]{0,100}$")]
 
 class BatchFinding(Finding):
     capability_key: CapabilityKey
+    lot_review: LotFinding | None = None
 
 
 class PublicIntakePacket(IntakeAgentRequest):
@@ -54,6 +63,7 @@ class PublicIntakePacket(IntakeAgentRequest):
 class IntakeBatchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     candidates: list[PublicIntakePacket] = Field(min_length=1, max_length=5)
+    lot_context: LotContext | None = None
 
 
 class IntakeAgentResponse(BaseModel):
@@ -63,6 +73,7 @@ class IntakeAgentResponse(BaseModel):
     source: SourceLink | None = None
     quote: str | None = None
     dispatch_approved: Literal[False] = False
+    lot_review: LotReview | None = None
 
 
 class IntakeBatchResponse(BaseModel):
@@ -150,9 +161,12 @@ def covers_initial_input(packet, finding):
 
 def review_batch(request, model):
     packets = request.candidates
+    context = request.lot_context
     results = {
         packet.capability_key: IntakeAgentResponse(
-            status="model_unavailable", next_check=packet.next_check
+            status="model_unavailable",
+            next_check=packet.next_check,
+            lot_review=apply_lot_finding(None, context) if context else None,
         )
         for packet in packets
     }
@@ -166,6 +180,20 @@ def review_batch(request, model):
         }
         for packet in packets
     ]
+    model_kwargs = {}
+    observations = None
+    if context is not None:
+        observations = observe_photos(context, model)
+        if observations is None:
+            return IntakeBatchResponse(results=results)
+        evidence = {
+            "candidates": evidence,
+            "lot": context.model_dump(exclude={"photos"}),
+            "photo_ids": [p.photo_id for p in context.photos],
+            "visual_observations": [p.model_dump() for p in observations],
+        }
+        # Text-only comparison, with the larger lot-review response budget.
+        model_kwargs["images"] = []
     try:
         text = model(
             instructions=(
@@ -181,8 +209,10 @@ def review_batch(request, model):
                 "같은 소재라도 다른 형태를 다루는 문장은 반입 근거로 쓰지 마라. "
                 "quote는 해당 source_id의 summary 안에 연속해서 있는 문장을 그대로 써라. "
                 "자료가 없거나 부족하면 kind는 insufficient, source_id와 quote는 null이다."
+                + (LOT_INSTRUCTIONS if context is not None else "")
             ),
             evidence=json.dumps(evidence, ensure_ascii=False),
+            **model_kwargs,
         )
         rows = parse_model_json(text)
     except (ReviewModelUnavailable, ValueError, TypeError):
@@ -209,6 +239,10 @@ def review_batch(request, model):
             else {}
         )
         results[key] = apply_finding(findings[key], sources, packet.next_check)
+        if context is not None:
+            results[key].lot_review = apply_lot_finding(
+                findings[key].lot_review, context, observations=observations
+            )
     return IntakeBatchResponse(results=results)
 
 

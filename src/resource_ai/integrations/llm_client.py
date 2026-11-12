@@ -83,16 +83,27 @@ def azure_response(settings, body, *, timeout):
         raise ReviewModelUnavailable("provider response error") from None
 
 
-def review_with_azure(settings, *, instructions, evidence):
+def review_with_azure(settings, *, instructions, evidence, images=None):
+    model_input = evidence
+    if images:
+        content = [{"type": "input_text", "text": evidence}]
+        for image in images:
+            content.extend(
+                [
+                    {"type": "input_text", "text": f"photo_id: {image['photo_id']}"},
+                    {"type": "input_image", "image_url": image["data_url"], "detail": "high"},
+                ]
+            )
+        model_input = [{"role": "user", "content": content}]
     payload = azure_response(
         settings,
         {
             "reasoning": {"effort": "high"},
-            "max_output_tokens": 2400,
+            "max_output_tokens": 6500 if images is not None else 2400,
             "instructions": instructions,
-            "input": evidence,
+            "input": model_input,
         },
-        timeout=35,
+        timeout=80 if images is not None else 35,
     )
     try:
         return "".join(
