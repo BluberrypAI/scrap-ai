@@ -1,0 +1,45 @@
+{
+  "snapshot_checksum": "540bcda2a4b92c1a1aa6c8898015882ef707f8542465bb73c6edaae3286858cb",
+  "candidates": [
+    {
+      "capability_key": "bgf-yesan--pp-clean",
+      "site": "BGF에코사이클 재생원료사업장",
+      "site_scope": "site_role_hypothesis",
+      "process": "PP 세정 조사",
+      "waste_code": null,
+      "material": "pp",
+      "form": "PP 파쇄품·순도 및 세척 상태 미확인",
+      "recycling_types": {},
+      "next_check": "현재 형태의 반입 근거를 확인해 주세요.",
+      "sources": [
+        {
+          "source_id": "bgf-recycling",
+          "summary": "선별·세척·압출 재생·컴파운딩과 r-PP·r-PE·r-PET 제품, 인천·예산·화성 사업장 역할을 소개한다. 개별 사업장별 모든 설비의 가동은 이 자료만으로 입증되지 않는다.",
+          "publisher": "BGF에코머티리얼즈",
+          "url": "https://www.bgfecomaterials.com/kr/company/business/recycle",
+          "locator": "사업영역 / 제품 / 계열사·사업소"
+        }
+      ]
+    },
+    {
+      "capability_key": "veolia-doksan-hwaseong--pp-shredded-to-pellet",
+      "site": "독산 화성",
+      "site_scope": "published_site_process",
+      "process": "선별 PP 파쇄품에서 재생 펠렛 생산",
+      "waste_code": null,
+      "material": "pp",
+      "form": "PP 파쇄품·순도 및 세척 상태 미확인",
+      "recycling_types": {},
+      "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+      "sources": [
+        {
+          "source_id": "veolia-doksan-public-intake-summary",
+          "summary": "The company describes selected PP flakes and baled PP as feedstocks purchased by Doksan to produce recycled pellets. Its separate DSPL site compounds recycled PP pellets.",
+          "publisher": "베올리아코리아",
+          "url": "https://www.veolia.kr/ko/plastiloop-hwaseong",
+          "locator": "독산의 공개 원료 사례"
+        }
+      ]
+    }
+  ]
+}
