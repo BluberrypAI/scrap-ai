@@ -6,6 +6,7 @@
 - 전체 실행 흐름: [docs/pipeline-baseline.md](docs/pipeline-baseline.md)
 - 코드와 데이터 구조: [docs/architecture.md](docs/architecture.md)
 - SCRAP 처리경로 API: [docs/scrap-next-step.md](docs/scrap-next-step.md)
+- 상태·사진 업체 검토: [사진만 먼저 관찰 → 설명·업체 자료 대조](docs/lot-vision-review.md). 업체 최종 수락과 구분합니다.
 - 의사결정 연구 검토: [docs/scrap-decision-research.md](docs/scrap-decision-research.md)
 - 팀 공통 규칙: [resource-ai-team/.github CONTRIBUTING](https://github.com/resource-ai-team/.github/blob/main/CONTRIBUTING.md)
 
