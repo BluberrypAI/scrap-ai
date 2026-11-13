@@ -6,6 +6,9 @@ from urllib.parse import urlsplit
 
 import httpx
 
+# 리소스 단위 Azure OpenAI v1 경로. 호출은 항상 {host}/openai/v1/responses로 보낸다
+V1_PATHS = {"/openai/v1", "/openai/v1/responses"}
+
 
 class ReviewModelUnavailable(RuntimeError):
     pass
@@ -50,11 +53,9 @@ def azure_response(settings, body, *, timeout):
         and key
         and settings.azure_openai_deployment
         and (
-            (host.endswith(".services.ai.azure.com") and project)
-            or (
-                host.endswith(".openai.azure.com")
-                and path in {"", "/openai/v1", "/openai/v1/responses"}
-            )
+            # Foundry 프로젝트 주소, 또는 리소스 단위 v1 주소(엔진과 같은 형식)
+            (host.endswith(".services.ai.azure.com") and (project or path in V1_PATHS))
+            or (host.endswith(".openai.azure.com") and (path == "" or path in V1_PATHS))
         )
     ):
         raise ReviewModelUnavailable()
