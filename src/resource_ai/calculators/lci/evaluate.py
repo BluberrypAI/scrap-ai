@@ -1,4 +1,4 @@
-"""Conservative, source-bound W2RKG → KEITI LCI PET carbon estimates.
+"""Conservative, source-bound W2RKG → KEITI LCI plastic carbon estimates.
 
 No result in this module is permission to dispatch waste, a facility-specific
 measurement, or an ISO-conformant comparative assertion.
@@ -15,6 +15,39 @@ from resource_ai.calculators.lci.ilcd import LCIDataset, decimal_value
 # The flake LCI is a SINGLE aggregated boundary, never four separate factors.
 PET_FLAKE_UUID = "f77f5793-82c4-4731-a011-ecd8e3b593ce"
 PET_INCINERATION_UUID = "922879a8-8826-41ab-9fdb-9db61742a149"
+
+# Process UUIDs independently verified against each source ZIP (not emission factors).
+# Route matching only accepts explicit whole-process incineration for the exact resin.
+INCINERATION_PROCESS_UUIDS = {
+    "pet": PET_INCINERATION_UUID,
+    "hdpe": "cdb9c4a6-87f6-4673-b48f-54715a347dc3",
+    "ldpe": "a7ca2ffa-e6db-44bc-99bd-27fe64cbd380",
+    "pp": "f863dfc3-1af5-4815-9798-15ce74225b7a",
+    "ps": "da5a226c-3799-42cf-9a34-fbb0b065cb2c",
+    "pvc": "b7975da6-c4bc-48fd-b3a8-68b421c4082a",
+}
+MATERIAL_ALIASES = {
+    "pet": "pet",
+    "폐pet": "pet",
+    "폐페트": "pet",
+    "waste pet": "pet",
+    "waste pet bottles": "pet",
+    "hdpe": "hdpe",
+    "폐hdpe": "hdpe",
+    "high density polyethylene": "hdpe",
+    "ldpe": "ldpe",
+    "폐ldpe": "ldpe",
+    "low density polyethylene": "ldpe",
+    "pp": "pp",
+    "폐pp": "pp",
+    "polypropylene": "pp",
+    "ps": "ps",
+    "폐ps": "ps",
+    "polystyrene": "ps",
+    "pvc": "pvc",
+    "폐pvc": "pvc",
+    "polyvinyl chloride": "pvc",
+}
 FLAKE_STEPS = ("sorting", "shredding", "washing", "drying")
 KG_FLAKE_TRANSITIONS = ("pet-prepare", "pet-wash", "pet-finish")
 ALIASES = {
@@ -56,7 +89,7 @@ def _route_steps(value):
 
 
 def evaluate_candidate(candidate: dict[str, Any], datasets: list[LCIDataset]):
-    """Compute a screening estimate only for an exactly covered PET treatment route."""
+    """Compute only for a verified whole-process plastic treatment route."""
     if not isinstance(candidate, dict):
         raise TypeError("candidate must be an object")
     if not isinstance(candidate.get("candidate_id"), str) or not candidate["candidate_id"]:
@@ -67,19 +100,16 @@ def evaluate_candidate(candidate: dict[str, Any], datasets: list[LCIDataset]):
     steps = _route_steps(candidate.get("process_steps"))
     if len(set(steps)) != len(steps):
         return _status(candidate, "REVIEW_REQUIRED", "Repeated step: double-count risk")
-    if str(candidate.get("material", "")).strip().lower() not in {
-        "pet",
-        "폐pet",
-        "폐페트",
-        "waste pet",
-        "waste pet bottles",
-    }:
-        return _status(candidate, "UNMATCHED", "Only PET material is covered")
+    material = MATERIAL_ALIASES.get(str(candidate.get("material", "")).strip().lower())
+    if material is None:
+        return _status(candidate, "UNMATCHED", "No validated LCI material mapping")
     if tuple(steps) in (FLAKE_STEPS, KG_FLAKE_TRANSITIONS):
+        if material != "pet":
+            return _status(candidate, "UNMATCHED", "PET flake LCI cannot represent other resins")
         uuid, kind = PET_FLAKE_UUID, "AGGREGATED"
         transport_boundary = "INCLUDES_COLLECTION_AND_INTERNAL_TRANSPORT"
     elif steps == ["incineration"]:
-        uuid, kind = PET_INCINERATION_UUID, "EXACT"
+        uuid, kind = INCINERATION_PROCESS_UUIDS[material], "EXACT"
         transport_boundary = "EXCLUDES_EXTERNAL_COLLECTION_TRANSPORT"
     else:
         return _status(
@@ -89,6 +119,8 @@ def evaluate_candidate(candidate: dict[str, Any], datasets: list[LCIDataset]):
     if len(matching) != 1:
         return _status(candidate, "REVIEW_REQUIRED", "Expected exactly one matching dataset")
     d = matching[0]
+    if d.process_uuid != uuid:
+        return _status(candidate, "REVIEW_REQUIRED", "Process UUID does not match material")
     base = {
         "lci_mapping_type": kind,
         "covered_steps": steps,

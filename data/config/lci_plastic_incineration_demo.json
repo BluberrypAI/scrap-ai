@@ -1,0 +1,50 @@
+[
+  {
+    "candidate_id": "example-pet-incineration",
+    "material": "PET",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  },
+  {
+    "candidate_id": "example-hdpe-incineration",
+    "material": "HDPE",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  },
+  {
+    "candidate_id": "example-ldpe-incineration",
+    "material": "LDPE",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  },
+  {
+    "candidate_id": "example-pp-incineration",
+    "material": "PP",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  },
+  {
+    "candidate_id": "example-ps-incineration",
+    "material": "PS",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  },
+  {
+    "candidate_id": "example-pvc-incineration",
+    "material": "PVC",
+    "process_steps": [
+      "incineration"
+    ],
+    "input_mass_kg": "1000"
+  }
+]
