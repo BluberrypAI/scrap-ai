@@ -1,0 +1,538 @@
+{
+  "checked_on": "2026-11-14",
+  "scenario_kind": "synthetic_inputs_public_sources_only",
+  "queries": [
+    {
+      "material": "abs",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "abs",
+      "input_form": "rigid",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "abs",
+      "input_form": "scrap",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "abs",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "eps",
+      "input_form": "ingot",
+      "waste_code": "51-03-06",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pa6",
+      "input_form": "net",
+      "waste_code": "51-03-08",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pa66",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pa66",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pcabs",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pcabs",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pe",
+      "input_form": "bale",
+      "waste_code": "51-03-01",
+      "status": "no_route",
+      "facility_count": 0
+    },
+    {
+      "material": "pe",
+      "input_form": "bale",
+      "waste_code": "51-03-07",
+      "status": "no_route",
+      "facility_count": 0
+    },
+    {
+      "material": "pe",
+      "input_form": "film",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "film",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "pe",
+      "input_form": "pellet",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pe",
+      "input_form": "rigid",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "rigid",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "scrap",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "scrap",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pe",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "pet",
+      "input_form": "bale",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "pet",
+      "input_form": "bale",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "pet",
+      "input_form": "bottle",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "pet",
+      "input_form": "bottle",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "pet",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "pp",
+      "input_form": "bale",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pp",
+      "input_form": "bale",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "pp",
+      "input_form": "film",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "film",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "pp",
+      "input_form": "pellet",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "pp",
+      "input_form": "rigid",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "rigid",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "scrap",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "scrap",
+      "waste_code": "51-03-07",
+      "status": "candidates",
+      "facility_count": 6
+    },
+    {
+      "material": "pp",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 5
+    },
+    {
+      "material": "ps",
+      "input_form": "bale",
+      "waste_code": "51-03-01",
+      "status": "no_route",
+      "facility_count": 0
+    },
+    {
+      "material": "ps",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 4
+    },
+    {
+      "material": "ps",
+      "input_form": "rigid",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "ps",
+      "input_form": "scrap",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 3
+    },
+    {
+      "material": "ps",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 4
+    },
+    {
+      "material": "pvc",
+      "input_form": "wallpaper",
+      "waste_code": "51-03-03",
+      "status": "candidates",
+      "facility_count": 1
+    },
+    {
+      "material": "san",
+      "input_form": "flake",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "san",
+      "input_form": "rigid",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "san",
+      "input_form": "scrap",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    },
+    {
+      "material": "san",
+      "input_form": "shredded",
+      "waste_code": "51-03-01",
+      "status": "candidates",
+      "facility_count": 2
+    }
+  ],
+  "ai_reviews": [
+    {
+      "material": "pp",
+      "form": "scrap",
+      "capability_key": "daewoon-naju--pp-scrap-to-pellet",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "reviewed",
+        "finding": "form_mentioned",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": {
+          "publisher": "대운프라스틱",
+          "url": "https://dwplastic.co.kr",
+          "locator": "제품소개·제조공정·회사주소"
+        },
+        "quote": "대운프라스틱 나주 사업장은 PP·PE 폐플라스틱 스크랩·경질 제품·폐비닐을 선별·분쇄·세척·건조·용융압출·냉각절단하여 재생 펠릿으로 만드는 공정을 공개한다.",
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pe",
+      "form": "film",
+      "capability_key": "youngshin-naju--pe-scrap-to-pellet",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "reviewed",
+        "finding": "form_mentioned",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": {
+          "publisher": "영신케미칼",
+          "url": "https://yschemical.co.kr",
+          "locator": "제조공정·주요제품·회사주소"
+        },
+        "quote": "영신케미칼 나주 사업장은 PP·PE 폐플라스틱 스크랩·폐비닐을 선별·분쇄·세척·건조·용융압출·냉각절단하여 재생 펠릿을 생산하는 공정을 공개한다.",
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pet",
+      "form": "bottle",
+      "capability_key": "yuil-yangsan--pet-bottle-to-flake",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pp",
+      "form": "bale",
+      "capability_key": "veolia-doksan-hwaseong--pp-bale-to-pellet",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "reviewed",
+        "finding": "form_mentioned",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": {
+          "publisher": "베올리아",
+          "url": "https://www.veolia.kr/ko/plastiloop-hwaseong",
+          "locator": "독산/DSPL 사업장 역할 설명, PP 분쇄품 혹은 압축품 구매 문단"
+        },
+        "quote": "베올리아 독산 화성 사업장은 선별된 PP 분쇄품 또는 압축품(베일)을 구매하여 선별·분쇄·세척 후 PP 펠릿을 생산한다.",
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "abs",
+      "form": "flake",
+      "capability_key": "changmaec-seongju--abs-pelletise",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "ps",
+      "form": "shredded",
+      "capability_key": "changmaec-seongju--ps-pelletise",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "san",
+      "form": "scrap",
+      "capability_key": "cntk-jinju--san-prepare",
+      "site_scope": "site_role_hypothesis",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이 사업장에서 해당 재질과 형태를 처리하는지 먼저 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pvc",
+      "form": "wallpaper",
+      "capability_key": "sungji-hwaseong--pvc-wallpaper-recovery",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "reviewed",
+        "finding": "form_mentioned",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": {
+          "publisher": "성지",
+          "url": "https://sungjikorea.co.kr/manufactured-products",
+          "locator": "제조상품 > PVC 원료·벽지 재생 / 화성 양감면 주소"
+        },
+        "quote": "성지 화성 사업장은 PVC 벽지를 분리하여 PVC 페이스트 원료와 종이 분말을 재생하는 제조상품을 소개한다.",
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "eps",
+      "form": "ingot",
+      "capability_key": "ecops-yeongcheon--eps-ingot-pelletise",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "reviewed",
+        "finding": "form_mentioned",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": {
+          "publisher": "에코피에스",
+          "url": "http://ecops.kr/",
+          "locator": "생산공정 01 인고트 입고 → 02 분쇄 → 03 펠릿 / 영천 공장주소"
+        },
+        "quote": "에코피에스 영천 공장은 열압축된 EPS 인고트를 외부에서 받아 검수·분쇄·용융압출·절단·냉각하여 PS 펠릿을 생산한다.",
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pa6",
+      "form": "net",
+      "capability_key": "netspa-busan--pa6-net-recovery",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pa66",
+      "form": "flake",
+      "capability_key": "changmaec-seongju--pa66-compound",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    },
+    {
+      "material": "pcabs",
+      "form": "flake",
+      "capability_key": "changmaec-seongju--pcabs-compound",
+      "site_scope": "published_site_process",
+      "result": {
+        "status": "needs_evidence",
+        "finding": "insufficient",
+        "next_check": "이번 물량의 허용 이물·수분 기준과 인수 가능 여부를 확인하세요.",
+        "source": null,
+        "quote": null,
+        "dispatch_approved": false,
+        "lot_review": null
+      }
+    }
+  ],
+  "registry_rows": 9604
+}
