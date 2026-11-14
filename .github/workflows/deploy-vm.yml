@@ -1,0 +1,41 @@
+# main에 올라오면 단일 VM 시험 배포를 갱신한다 (scrap-infra docs/deploy-single-vm.md)
+# VM에서 deploy/update.sh가 5개 레포를 모두 main 최신으로 받고 바뀐 서비스만 다시 빌드한다
+# 필요한 값 (레포 Settings → Secrets and variables → Actions)
+#   secrets.VM_DEPLOY_SSH_KEY  배포 전용 SSH 프라이빗 키 (VM에서 update.sh만 실행 가능)
+#   vars.VM_HOST               VM 주소 (예 scrap-test.eastus.cloudapp.azure.com)
+#   vars.VM_USER               VM 계정 (azureuser)
+#   vars.VM_KNOWN_HOSTS        VM 호스트 키 한 줄 (ssh-keyscan 결과)
+# VM_HOST가 없으면 건너뛴다
+
+name: Deploy VM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vm
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.VM_HOST != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: SSH 키 준비
+        env:
+          SSH_KEY: ${{ secrets.VM_DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.VM_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: VM 배포
+        env:
+          VM_HOST: ${{ vars.VM_HOST }}
+          VM_USER: ${{ vars.VM_USER }}
+        run: ssh -i ~/.ssh/deploy_key -o ServerAliveInterval=30 "$VM_USER@$VM_HOST"
