@@ -7,6 +7,7 @@
 - 코드와 데이터 구조: [docs/architecture.md](docs/architecture.md)
 - SCRAP 처리경로 API: [docs/scrap-next-step.md](docs/scrap-next-step.md)
 - 상태·사진 업체 검토: [사진만 먼저 관찰 → 설명·업체 자료 대조](docs/lot-vision-review.md). 업체 최종 수락과 구분합니다.
+- 업체별 질문 답변: [추가 답변을 AI 검토에 반영](docs/intake-answers.md). 답변은 자기신고이며 공개 근거·반입 승인으로 취급하지 않습니다.
 - 의사결정 연구 검토: [docs/scrap-decision-research.md](docs/scrap-decision-research.md)
 - 팀 공통 규칙: [resource-ai-team/.github CONTRIBUTING](https://github.com/resource-ai-team/.github/blob/main/CONTRIBUTING.md)
 
